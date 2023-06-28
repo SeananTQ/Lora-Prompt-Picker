@@ -1,0 +1,109 @@
+﻿body {
+    background-color: #f2f2f2;
+    font-family: 'PingFang SC', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', SimSun, sans-serif;
+}
+
+h1 {
+    color: #3792cb;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 5%;
+}
+
+.left {
+    flex: 1;
+    margin-right: 5%;
+}
+
+.right {
+    flex: 1;
+}
+
+textarea {
+    width: 100%;
+    resize: vertical;
+    font-size: 18px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+.analyze-btn {
+    display: block;
+    width: 98%;
+    margin: 1px auto;
+    padding: 5px;
+    font-size: 20px;
+    color: white;
+    background-color: #ffa726;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+    .analyze-btn:hover {
+        background-color: #ff9100;
+    }
+
+.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.inactive {
+    background-color: black;
+    color: white;
+}
+
+    .active:focus,
+    .inactive:focus {
+        outline: none;
+    }
+
+.image-display {
+    max-width: 512px;
+    max-height: 512px;
+    margin-bottom: 20px;
+}
+
+.file-input {
+    margin-bottom: 10px;
+}
+
+.file-label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.image-name {
+    margin-bottom: 5px;
+}
+
+.next-btn {
+    margin-bottom: 10px;
+}
+
+.saveAs-btn {
+    display: block;
+    margin-top: 10px;
+}
+
+/* 修改部分 */
+.btn-group {
+    margin-top: 10px;
+}
+
+.image-display {
+    order: 2;
+}
+
+.copy-btn,
+.ruminate-btn {
+    float: right;
+    margin-top: 0;
+    margin-right: 5px;
+}
