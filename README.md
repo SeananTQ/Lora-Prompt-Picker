@@ -1,10 +1,10 @@
 # 项目名称
 
-图片素材管理器
+训练LORA的图片素材TAG管理器
 
 ## 项目介绍
 
-图片素材管理器是一个用于管理和展示图片素材的应用程序。它允许用户选择一个文件夹作为素材文件夹，并对该文件夹内的所有图片文件进行统计和管理。用户可以浏览图片、查看对应的文本内容，并进行文本分析和处理。
+该管理器是一个用于管理和展示图片素材的应用程序。它允许用户选择一个文件夹作为素材文件夹，并对该文件夹内的所有图片文件进行统计和管理。用户可以浏览图片、查看对应的文本内容，并进行文本分析和处理。
 
 ## 功能特点
 
@@ -31,11 +31,11 @@
 
 2. 打开index.html文件：
 
-```bash
-Copy code
-cd your-repo
-open index.html
-```
+    ```bash
+    Copy code
+    cd your-repo
+    open index.html
+    ```
 3. 在打开的应用程序界面中，点击文件夹选择器按钮，选择一个包含图片素材的文件夹。
 
 4. 应用程序将统计文件夹中的所有图片文件，并显示第一张图片和对应的文本内容。
@@ -50,11 +50,10 @@ open index.html
 - index.html
 - style.css
 - script.js
-- images/
+- testImage/
   - image1.jpg
   - image2.jpg
   - image3.jpg
-- texts/
   - image1.txt
   - image2.txt
   - image3.txt
@@ -62,8 +61,7 @@ open index.html
 index.html：应用程序的入口HTML文件。
 style.css：应用程序的样式文件。
 script.js：应用程序的JavaScript文件，包含主要的功能逻辑。
-images/：存放图片素材的文件夹。
-texts/：存放与图片对应的文本文件的文件夹。
+images/：存放图片素材以及与图片对应的文本文件的文件夹。
 
 ## 示例
 暂无示例。
