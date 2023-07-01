@@ -1,3 +1,4 @@
 {
-    "typescript.locale": "auto"
+    "typescript.locale": "auto",
+    "aws.telemetry": false
 }

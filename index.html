@@ -1,36 +1,48 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>LORA提示词修补工具</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" href="theme.css">
 
 </head>
+
 <body>
     <h1>LORA提示词修补工具</h1>
     <div class="container">
         <div class="left">
             <div class="file-input">
-                <label class="file-label" for="fileSelector">选择素材文件夹:</label>
-                <input type="file" id="fileSelector" class="file-selector" directory="" webkitdirectory="" mozdirectory="" />
+                <label id="fileSelectorLabel" class="button-file-selector" for="fileSelector">选择素材文件夹:</label>
+                <input type="file" id="fileSelector" class="file-selector" directory="" webkitdirectory=""
+                    mozdirectory="" />
+            </div>
+            <div class="image-display">
+                <img id="imageDisplay" src="" alt="尚未选择图片" />
             </div>
             <div class="image-name">当前图片文件名：尚未选择文件夹</div>
-            <button id="nextBtn" class="next-btn">下一张</button>
-
-            <div class="image-display">
-                <img id="imageDisplay" src="" alt="当前图片" />
+            <div class="button-wrapper">
+                <button id="previous10Btn" class="button-small">上10张</button>
+                <button id="previousBtn" class="button-small">上一张</button>
+                <button id="nextBtn" class="button-small">下一张</button>
+                <button id="next10Btn" class="button-small">下10张</button>
             </div>
+
         </div>
         <div class="right">
-            <textarea id="input" rows="10" placeholder="输入文本"></textarea>   
-            <button id="analyzeBtn" class="analyze-btn">分析</button>
-            <button id="copyBtn" class="copy-btn">复制</button>
-            <button id="ruminateBtn" class="ruminate-btn">反刍</button>
-            <button id="saveAsBtn" class="saveAs-btn">另存为</button>
+            <textarea id="input" rows="10" placeholder="输入文本"></textarea>
+            <button id="analyzeBtn" class="button-large">分析</button>
             <textarea id="output" rows="10" readonly></textarea>
+            <div class="button-wrapper">
+                <button id="copyBtn" class="button-small">复制</button>
+                <button id="ruminateBtn" class="button-small">反刍</button>
+                <button id="saveAsBtn" class="button-small">另存为</button>
+            </div>
+
             <div id="btnGroup"></div>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

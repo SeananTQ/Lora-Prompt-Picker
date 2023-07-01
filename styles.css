@@ -1,4 +1,15 @@
-﻿body {
+﻿:root{
+
+    --border-radius: 5px;
+
+    --button-small-spacing:10px;
+    --button-small-font-siez:16px;
+
+}
+
+
+
+body {
     background-color: #f2f2f2;
     font-family: 'PingFang SC', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', SimSun, sans-serif;
 }
@@ -17,37 +28,112 @@ h1 {
 
 .left {
     flex: 1;
-    margin-right: 5%;
+    flex-direction: column;
+    margin-right: 2%;
+    /* background-color: #4CAF50; */
 }
 
 .right {
     flex: 1;
+    /* display: flex; */
+    flex-direction: column;
+    /* background-color: #4CAF50; */
 }
 
+
+.right .button-wrapper{
+    display: flex;
+}
+
+
+.left .button-wrapper{
+    display: flex;
+    max-width: 512px;   
+}
+
+.button-wrapper button{
+    margin-right: var( --button-small-spacing);
+    margin-bottom: 10px;
+}
+
+.button-wrapper button:last-child{
+    margin-right: 0px;
+}
+
+
+
+
+
 textarea {
-    width: 100%;
-    resize: vertical;
-    font-size: 18px;
-    border-radius: 5px;
+    /* box-sizing: border-box; */
+    width:calc(100% - 20px - var(--border-radius) + 1px);
+    padding: 10px 10px;
+    resize: none;
+    font-size: 20px;
+    /* font-family: Arial, sans-serif; */
+    border-radius: var(--border-radius);
+    border: 2px solid #000;
     overflow: auto;
 }
 
-.analyze-btn {
+
+.file-selector{
+
+  display: none;
+}
+
+
+.button-file-selector {
+    flex: none; /* 取消子元素宽度的自动调整 */
+    width: 512px !important;
+    /* display: block; */
+    /* width: 512px !important; */
+    padding: 5px;
+    font-size: var(--button-small-font-siez);
+    color: rgb(0, 0, 0);
+    background-color: #a2d5ff;
+    border-radius: var(--border-radius);
+    border: 2px solid #000;
+    cursor: pointer;
+
+    margin-bottom: 20px;
+}
+
+.button-small {
+    flex-grow: 1;
+    /* display: block; */
+    /* width: 100%; */
+    padding: 5px;
+    font-size: var( --button-small-font-siez);
+    color: rgb(0, 0, 0);
+    background-color: #a2d5ff;
+    border-radius: var(--border-radius);
+    border: 2px solid #000;
+    cursor: pointer;
+}
+
+
+
+.button-large {
+    flex: 1;
     display: block;
-    width: 98%;
+    width: 100%;
     margin: 1px auto;
     padding: 5px;
     font-size: 20px;
     color: white;
     background-color: #ffa726;
-    border-radius: 5px;
-    border: none;
+    border-radius: var(--border-radius);
+    border: 2px solid #000;
     cursor: pointer;
+
+    margin-top: 2px;
+    margin-bottom: 8px;
 }
 
-    .analyze-btn:hover {
-        background-color: #ff9100;
-    }
+.button-large:hover {
+    background-color: #ff9100;
+}
 
 .active {
     background-color: #4CAF50;
@@ -59,51 +145,31 @@ textarea {
     color: white;
 }
 
-    .active:focus,
-    .inactive:focus {
-        outline: none;
-    }
+.active:focus,
+.inactive:focus {
+    outline: none;
+}
 
 .image-display {
     max-width: 512px;
     max-height: 512px;
-    margin-bottom: 20px;
-}
-
-.file-input {
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 
-.file-label {
-    display: block;
-    margin-bottom: 5px;
-}
+
 
 .image-name {
     margin-bottom: 5px;
 }
 
-.next-btn {
-    margin-bottom: 10px;
-}
 
-.saveAs-btn {
-    display: block;
-    margin-top: 10px;
-}
 
-/* 修改部分 */
 .btn-group {
     margin-top: 10px;
+
 }
 
 .image-display {
     order: 2;
-}
-
-.copy-btn,
-.ruminate-btn {
-    float: right;
-    margin-top: 0;
-    margin-right: 5px;
 }

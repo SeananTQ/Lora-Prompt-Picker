@@ -1,12 +1,15 @@
 window.onload = function () {
+    var fileSelectorLabel = document.getElementById("fileSelectorLabel");
     var input = document.getElementById("input");
     var analyzeBtn = document.getElementById("analyzeBtn");
     var output = document.getElementById("output");
     var btnGroup = document.getElementById("btnGroup");
     var fileSelector = document.getElementById("fileSelector");
     var imageDisplay = document.getElementById("imageDisplay");
-    var imageName = document.getElementById("imageName");
     var nextBtn = document.getElementById("nextBtn");
+    var next10Btn = document.getElementById("next10Btn");
+    var previousBtn = document.getElementById("previousBtn");
+    var previous10Btn = document.getElementById("previous10Btn");
     var saveAsBtn = document.getElementById("saveAsBtn");
     var copyBtn = document.getElementById("copyBtn");
     var ruminateBtn = document.getElementById("ruminateBtn");
@@ -19,10 +22,15 @@ window.onload = function () {
 
     analyzeBtn.addEventListener("click", analyzeText);
     fileSelector.addEventListener("change", handleFileSelection);
-    nextBtn.addEventListener("click", showNextImage);
+    nextBtn.addEventListener("click", function(){showNextImage(1)});
+    next10Btn.addEventListener("click", function(){showNextImage(10)});
+    previousBtn.addEventListener("click", function(){showPreviousImage(1)});
+    previous10Btn.addEventListener("click", function(){showPreviousImage(10)});
+
     copyBtn.addEventListener("click", copyOutput);
     ruminateBtn.addEventListener("click", ruminateOutput);
     saveAsBtn.addEventListener("click", saveAsTextFile);
+    input.addEventListener("input", updateTextareaHeight);
 
     function analyzeText() {
         var inputText = input.value.trim().toLowerCase();
@@ -79,19 +87,22 @@ window.onload = function () {
             }
         }
 
-        // 更新右侧文本框高度
-        updateTextareaHeight();
+        // // 更新右侧文本框高度
+        // updateTextareaHeight();
     }
 
-    // 更新右侧文本框高度
+    // 当文本内容过多后出现滚动条时,增加文本框高度,从而使滚动条避免出现
     function updateTextareaHeight() {
-        output.style.height = "";
-        input.style.height = "";
-
-        var maxHeight = Math.max(input.scrollHeight, output.scrollHeight);
-        input.style.height = maxHeight + "px";
-        output.style.height = maxHeight + "px";
+        if(input.scrollHeight > input.clientHeight)
+        {
+            input.style.height = "auto";
+            input.style.height = input.scrollHeight + "px";
+            output.style.height = "auto";
+            output.style.height = output.scrollHeight + "px";
+        }
     }
+
+
 
 
     function handleFileSelection(evt) {
@@ -112,6 +123,9 @@ window.onload = function () {
                     });
                 }
             }
+
+            fileSelectorLabel.textContent="点击此处可重新选择文件夹  |  当前文件夹中文件数量为:" + (txtFilePaths.length + imageFilePaths.length);
+
             updateImageAndText();
         }
     }
@@ -163,11 +177,18 @@ window.onload = function () {
     }
 
 
+    //显示后N张图片,自动处理越界
+    function showNextImage(count) {
+        if (count !== 1 && count !== 10) {
+            alert("参数count必须为1或10");
+            return;
+        }
 
-    function showNextImage() {
         if (currentImageFilePathIndex < imageFilePaths.length - 1 && currentTextFilePathIndex < txtFilePaths.length - 1) {
-            currentImageFilePathIndex++;
-            currentTextFilePathIndex++;
+            var go = imageFilePaths.length - 1 - currentImageFilePathIndex;
+            go = Math.min(go, count);
+            currentImageFilePathIndex += go;
+            currentTextFilePathIndex += go;
         } else {
             // 已经是最后一张图片，弹出提示对话框
             alert("已经是最后一张图片了");
@@ -175,6 +196,26 @@ window.onload = function () {
         }
         updateImageAndText();
     }
+
+    function showPreviousImage(count) {
+        if (count !== 1 && count !== 10) {
+            alert("参数count必须为1或10");
+            return;
+        }
+
+        if (currentImageFilePathIndex > 0 && currentTextFilePathIndex > 0) {
+            var go = currentImageFilePathIndex;
+            go = Math.min(go, count);
+            currentImageFilePathIndex -= go;
+            currentTextFilePathIndex -= go;
+        } else {
+     
+            alert("已经是第一张图片了");
+            return;
+        }
+        updateImageAndText();
+    } 
+
 
     function getFileName(path) {
         return path.split("/").pop();
@@ -216,6 +257,6 @@ window.onload = function () {
         URL.revokeObjectURL(a.href);
       }
       
-    
+
 
 };
