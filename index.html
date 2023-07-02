@@ -1,11 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>LORA提示词修补工具</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" href="theme.css">
 
 </head>
+
 <body>
     <h1>LORA提示词修补工具</h1>
     <div class="container">
@@ -25,7 +27,9 @@
                 <button id="nextBtn" class="button-small">下一张</button>
                 <button id="next10Btn" class="button-small">下10张</button>
             </div>
-
+            <button id="translateBtn" class="button-small">翻译测试</button>
+            <input type="checkbox"  name="enableTranslate" id="enableTranslate" value="true">
+            <label for="enableTranslate" >自动翻译功能</label>
         </div>
         <div class="right">
             <textarea id="input" rows="10" placeholder="请选择素材文件夹，之后此处会显示与图片相匹配的提示词文本"></textarea>
@@ -40,7 +44,11 @@
             <div id="btnGroup"></div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
+    <script src="youdao-api.js"></script>
     <script src="script.js"></script>
+
 </body>
 
 </html>

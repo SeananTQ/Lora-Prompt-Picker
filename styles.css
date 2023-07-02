@@ -173,3 +173,26 @@ textarea {
 .image-display {
     order: 2;
 }
+
+
+input[type="checkbox"] {
+    appearance: none;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    width: 20px;
+    height: 20px;
+    outline: none;
+    cursor: pointer;
+    vertical-align: middle; /* 垂直居中对齐 */
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: #0a7c00;
+    border-color: #ccc;
+  }
+
+label {
+
+    vertical-align: middle; /* 垂直居中对齐 */
+    
+}

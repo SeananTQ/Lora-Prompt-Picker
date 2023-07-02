@@ -13,6 +13,7 @@ window.onload = function () {
     var saveAsBtn = document.getElementById("saveAsBtn");
     var copyBtn = document.getElementById("copyBtn");
     var ruminateBtn = document.getElementById("ruminateBtn");
+    var translateBtn = document.getElementById("translateBtn");
     var lastClickedButton = null; // 记录最后点击的按钮
     var imageFilePaths = []; // 图片文件路径数组
     var txtFilePaths = [];//文本文件路径数组
@@ -32,33 +33,84 @@ window.onload = function () {
     saveAsBtn.addEventListener("click", saveAsTextFile);
     input.addEventListener("input", updateTextareaHeight);
 
-    function analyzeText() {
+    translateBtn.addEventListener("click",handleTranslation);
+
+    function handleTranslation() {
         var inputText = input.value.trim().toLowerCase();
+        inputText = inputText.replace(/,+/g, ',');
+        inputText = inputText.replace(/,(\s{1,2}),/g, ',');
+
+        translateText(inputText, function (translation) {
+            translation = translation.replace(/，+|、+/g, ','); // 将中文逗号和中文顿号替换为英文逗号
+            translation = translation.replace(/,+/g, ','); // 将连续多个英文逗号替换为单个英文逗号
+            translation = translation.replace(/,(\s{1,2}),/g, ','); // 将英文逗号前后的空格减少为一个空格
+            output.value = translation;
+          });
+    }
+
+
+    function analyzeText() {
+        // 获取输入的文本，并进行基本的清理和转换
+        var inputText = input.value.trim().toLowerCase();
+        inputText = inputText.replace(/_/g, " ");
         inputText = inputText.replace(/,+/g, ',');
         inputText = inputText.replace(/,(\s{1,2}),/g, ',');
 
         // 将输入的文本按逗号分隔并去除重复元素，将下划线替换为空格
         var elements = inputText.split(",").map(function (item) {
-            return item.trim().replace(/_/g, " ");
+            return item.trim();
         });
         elements = Array.from(new Set(elements));
 
-        // 更新输出文本框的初始值
-        output.value = elements.join(", ");
+        // 更新输出文本框的初始值，将元素拼接为一个字符串
+        var formatText = elements.join(", ");
+        output.value = formatText;
+
+        var chineseText = translateText(formatText, function (translation) {
+            translation = translation.replace(/，+|、+/g, ','); // 将中文逗号和中文顿号替换为英文逗号
+            translation = translation.replace(/,+/g, ','); // 将连续多个英文逗号替换为单个英文逗号
+            translation = translation.replace(/,(\s{1,2}),/g, ','); // 将英文逗号前后的空格减少为一个空格
+            return translation;
+        });
+
+        // 将中文拆分为数组
+        var chineseElements = chineseText.split(",").map(function (item) {
+            return item.trim();
+        });
+        chineseElements = Array.from(new Set(chineseElements));
+
 
         // 更新右侧文本框高度
         updateTextareaHeight();
 
         // 生成与元素数量相同的按钮
+        // 清空按钮组的内容
         btnGroup.innerHTML = "";
-        elements.forEach(function (element) {
+
+        // 遍历元素数组，为每个元素创建按钮并添加到按钮组
+        for (var i = 0; i < elements.length; i++) {
+            // 获取当前元素
+            var element = elements[i];
+
+            // 创建一个按钮元素
             var button = document.createElement("button");
+
+            // 设置按钮的显示文本为元素的值
             button.innerText = element;
-            button.dataset.text = element; // 设置自定义属性存储元素的文本
+
+            // 设置自定义属性存储元素的文本，方便后续处理
+            button.dataset.text = element;
+
+            // 绑定按钮的点击事件处理函数
             button.addEventListener("click", toggleButton);
+
+            // 添加按钮的样式类，这里添加了 "active" 类，可以根据需要修改
             button.classList.add("active");
+
+            // 将按钮添加到按钮组中
             btnGroup.appendChild(button);
-        });
+        }
+
 
         updateOutput();
     }
