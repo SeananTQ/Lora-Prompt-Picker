@@ -14,6 +14,9 @@ window.onload = function () {
     var copyBtn = document.getElementById("copyBtn");
     var ruminateBtn = document.getElementById("ruminateBtn");
     var translateBtn = document.getElementById("translateBtn");
+    var enableTranslate = document.getElementById("enableTranslate");
+
+
     var lastClickedButton = null; // 记录最后点击的按钮
     var imageFilePaths = []; // 图片文件路径数组
     var txtFilePaths = [];//文本文件路径数组
@@ -23,17 +26,31 @@ window.onload = function () {
 
     analyzeBtn.addEventListener("click", analyzeText);
     fileSelector.addEventListener("change", handleFileSelection);
-    nextBtn.addEventListener("click", function(){showNextImage(1)});
-    next10Btn.addEventListener("click", function(){showNextImage(10)});
-    previousBtn.addEventListener("click", function(){showPreviousImage(1)});
-    previous10Btn.addEventListener("click", function(){showPreviousImage(10)});
+    nextBtn.addEventListener("click", function () { showNextImage(1) });
+    next10Btn.addEventListener("click", function () { showNextImage(10) });
+    previousBtn.addEventListener("click", function () { showPreviousImage(1) });
+    previous10Btn.addEventListener("click", function () { showPreviousImage(10) });
 
     copyBtn.addEventListener("click", copyOutput);
     ruminateBtn.addEventListener("click", ruminateOutput);
     saveAsBtn.addEventListener("click", saveAsTextFile);
     input.addEventListener("input", updateTextareaHeight);
 
-    translateBtn.addEventListener("click",handleTranslation);
+    translateBtn.addEventListener("click", handleTranslation);
+    enableTranslate.addEventListener("click", handleCheckBoxEvent);
+
+
+
+
+    function handleCheckBoxEvent() {
+        if (enableTranslate.checked) {
+            analyzeBtn.innerText = "分析并翻译";
+        }
+        else {
+            analyzeBtn.innerText = "分析";
+        }
+    }
+
 
     function handleTranslation() {
         var inputText = input.value.trim().toLowerCase();
@@ -45,7 +62,7 @@ window.onload = function () {
             translation = translation.replace(/,+/g, ','); // 将连续多个英文逗号替换为单个英文逗号
             translation = translation.replace(/,(\s{1,2}),/g, ','); // 将英文逗号前后的空格减少为一个空格
             output.value = translation;
-          });
+        });
     }
 
 
@@ -66,54 +83,95 @@ window.onload = function () {
         var formatText = elements.join(", ");
         output.value = formatText;
 
-        var chineseText = translateText(formatText, function (translation) {
-            translation = translation.replace(/，+|、+/g, ','); // 将中文逗号和中文顿号替换为英文逗号
-            translation = translation.replace(/,+/g, ','); // 将连续多个英文逗号替换为单个英文逗号
-            translation = translation.replace(/,(\s{1,2}),/g, ','); // 将英文逗号前后的空格减少为一个空格
-            return translation;
-        });
-
-        // 将中文拆分为数组
-        var chineseElements = chineseText.split(",").map(function (item) {
-            return item.trim();
-        });
-        chineseElements = Array.from(new Set(chineseElements));
+        // 已经为元素文本数组赋值过了,接下来为中文元素词数组做处理准备,用中文顿号分割方便翻译.
+        formatText = formatText.replace(/,+/g, '、');
 
 
-        // 更新右侧文本框高度
-        updateTextareaHeight();
+        if (enableTranslate.checked) {
+            // 翻译文本，并返回一个Promise对象
+            translateText(formatText)
+                .then(function (chineseText) {
 
-        // 生成与元素数量相同的按钮
-        // 清空按钮组的内容
-        btnGroup.innerHTML = "";
+                    chineseText = chineseText.replace(/，+|、+/g, ','); // 将中文逗号和中文顿号替换为英文逗号
+                    chineseText = chineseText.replace(/,+/g, ','); // 将连续多个英文逗号替换为单个英文逗号
+                    chineseText = chineseText.replace(/,(\s{1,2}),/g, ','); // 将英文逗号前后的空格减少为一个空格
 
-        // 遍历元素数组，为每个元素创建按钮并添加到按钮组
-        for (var i = 0; i < elements.length; i++) {
-            // 获取当前元素
-            var element = elements[i];
 
-            // 创建一个按钮元素
-            var button = document.createElement("button");
+                    // 将中文拆分为数组
+                    var chineseElements = chineseText.split(",").map(function (item) {
+                        return item.trim();
+                    });
 
-            // 设置按钮的显示文本为元素的值
-            button.innerText = element;
 
-            // 设置自定义属性存储元素的文本，方便后续处理
-            button.dataset.text = element;
+                    if (elements.length !== chineseElements.length)
+                        alert("翻译结果有误,提示词数量不一致!请调整原文中的提示词顺序以避免该情况发生.");
 
-            // 绑定按钮的点击事件处理函数
-            button.addEventListener("click", toggleButton);
+                    // 更新右侧文本框高度
+                    updateTextareaHeight();
 
-            // 添加按钮的样式类，这里添加了 "active" 类，可以根据需要修改
-            button.classList.add("active");
+                    // 生成与元素数量相同的按钮
+                    // 清空按钮组的内容
+                    btnGroup.innerHTML = "";
 
-            // 将按钮添加到按钮组中
-            btnGroup.appendChild(button);
+                    // 遍历元素数组，为每个元素创建按钮并添加到按钮组
+                    for (var i = 0; i < elements.length; i++) {
+                        // 获取当前元素
+                        var element = elements[i];
+                        var chineseElement = chineseElements[i];
+
+                        // 创建一个按钮元素
+                        var button = document.createElement("button");
+
+                        // 设置按钮的显示文本为元素的值
+                        button.innerText = chineseElement;
+
+                        // 设置自定义属性存储元素的文本，方便后续处理
+                        button.dataset.text = element;
+
+                        // 设置自定义属性存储元素文本的中文翻译
+                        button.dataset.chineseText = chineseElement;
+
+                        // 绑定按钮的点击事件处理函数
+                        button.addEventListener("click", toggleButton);
+
+                        // 添加按钮的样式类，这里添加了 "active" 类，可以根据需要修改
+                        button.classList.add("active");
+
+                        // 将按钮添加到按钮组中
+                        btnGroup.appendChild(button);
+                    }
+                    updateOutput();
+                })
+                .catch(function (error) {
+                    //处理翻译错误 
+                    alert("翻译时出现错误");
+                });
         }
-
-
-        updateOutput();
     }
+
+
+    // 异步翻译函数
+    function translateText(text) {
+        return new Promise(function (resolve, reject) {
+            // 执行翻译逻辑，并在完成时调用resolve方法返回结果，或在发生错误时调用reject方法传递错误信息
+            performTranslation(text, function (translation) {
+                analyzeBtn.innerText = "分析并翻译";
+                analyzeBtn.disabled = false;
+                resolve(translation);
+            });
+        });
+    }
+
+    // 示例翻译函数，仅作为占位符，需要根据实际情况替换为实际的翻译逻辑
+    function performTranslation(text, callback) {
+        analyzeBtn.innerText = "翻译中...";
+        analyzeBtn.disabled = true;
+        // 模拟异步操作，比如使用API进行翻译
+        setTimeout(function () {
+            translateNetWork(text, callback);
+        }, 2000);
+    }
+
 
     function toggleButton() {
         this.classList.toggle("active");
@@ -145,8 +203,7 @@ window.onload = function () {
 
     // 当文本内容过多后出现滚动条时,增加文本框高度,从而使滚动条避免出现
     function updateTextareaHeight() {
-        if(input.scrollHeight > input.clientHeight)
-        {
+        if (input.scrollHeight > input.clientHeight) {
             input.style.height = "auto";
             input.style.height = input.scrollHeight + "px";
             output.style.height = "auto";
@@ -176,14 +233,14 @@ window.onload = function () {
                 }
             }
 
-            fileSelectorLabel.textContent="点击此处可重新选择文件夹  |  当前文件夹中文件数量为:" + (txtFilePaths.length + imageFilePaths.length);
+            fileSelectorLabel.textContent = "点击此处可重新选择文件夹  |  当前文件夹中文件数量为:" + (txtFilePaths.length + imageFilePaths.length);
 
             updateImageAndText();
         }
     }
-    
 
-    
+
+
 
     function displayImage(imagePath) {
         // 模拟异步操作，读取并显示图片
@@ -219,10 +276,10 @@ window.onload = function () {
     function updateImageAndText() {
         var tempCurrentImage = imageFilePaths[currentImageFilePathIndex];
         displayImage(tempCurrentImage.path);
-    
+
         // 更新当前图片文件名的显示
         var imageNameLabel = document.querySelector(".image-name");
-        imageNameLabel.textContent = "当前图片文件名：" + getFileName(tempCurrentImage.name) +" ["+(currentImageFilePathIndex+1)+"/" +imageFilePaths.length    +"]";
+        imageNameLabel.textContent = "当前图片文件名：" + getFileName(tempCurrentImage.name) + " [" + (currentImageFilePathIndex + 1) + "/" + imageFilePaths.length + "]";
 
         // 更新输入文本框的内容
         displayTextFile(txtFilePaths[currentTextFilePathIndex].path);
@@ -261,12 +318,12 @@ window.onload = function () {
             currentImageFilePathIndex -= go;
             currentTextFilePathIndex -= go;
         } else {
-     
+
             alert("已经是第一张图片了");
             return;
         }
         updateImageAndText();
-    } 
+    }
 
 
     function getFileName(path) {
@@ -282,33 +339,33 @@ window.onload = function () {
 
 
     function ruminateOutput() {
-        input.value = output.value;    
+        input.value = output.value;
         //alert("已将输出文本反刍至输入文本框");
     }
 
-    
+
 
     function saveAsTextFile() {
-        var textFileName =txtFilePaths[currentTextFilePathIndex].name;
+        var textFileName = txtFilePaths[currentTextFilePathIndex].name;
         // 创建新的 Blob 对象
         var blob = new Blob([output.value], { type: 'text/plain' });
-      
+
         // 创建隐藏的 <a> 元素用于下载
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = getFileName(textFileName);
 
         a.style.display = 'none';
-      
+
         // 将 <a> 元素添加到 DOM 中并模拟点击
         document.body.appendChild(a);
         a.click();
-      
+
         // 清理并移除 <a> 元素
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
-      }
-      
+    }
+
 
 
 };

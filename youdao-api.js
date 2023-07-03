@@ -1,8 +1,23 @@
-var appKey = '0daca4a31349386f';
-var key = '3RDtRIxcVhrc8w6p9vJToX0eSPhPxus0';//注意：暴露appSecret，有被盗用造成损失的风险
 
-// var query = 'not text';
-function translateText(query, callback) {
+var appKey = '';
+var key = '';
+var hasApiKey = false;
+
+try {
+    appKey = youdaoAPI.appid;
+    key = youdaoAPI.key;
+    hasApiKey = true;
+} catch (error) {
+    hasApiKey = false;
+    alert("请使用浏览器自带的翻译功能! \n未读取到翻译API,当前采用无API模式. ");
+}
+
+
+
+
+
+
+function translateNetWork(query, callback) {
     var salt = (new Date).getTime();
     var curtime = Math.round(new Date().getTime() / 1000);
 
@@ -14,10 +29,6 @@ function translateText(query, callback) {
     //console.log('---',str1);
 
     var sign = CryptoJS.SHA256(str1).toString(CryptoJS.enc.Hex);
-
-
-
-
     $.ajax({
         url: 'https://openapi.youdao.com/api',
         type: 'post',
