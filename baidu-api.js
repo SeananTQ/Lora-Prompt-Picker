@@ -8,6 +8,10 @@ try {
     hasApiKey = true;
 } catch (error) {
     hasApiKey = false;
+    // var enableTranslate = document.getElementById("enableTranslate");
+    // enableTranslate.style.display = "none";
+    var enableTranslateLabel = document.querySelector('.checkbox-label');
+    enableTranslateLabel.style.display = "none";
     alert("请使用浏览器自带的翻译功能! \n未读取到翻译API,当前采用无API模式. ");
 }
 

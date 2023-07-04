@@ -13,7 +13,7 @@
     <div class="container">
         <div class="left">
             <div class="file-input">
-                <label id="fileSelectorLabel" class="button-file-selector" for="fileSelector">选择素材文件夹:</label>
+                <label id="fileSelectorLabel" class="label-file-selector" for="fileSelector">选择素材文件夹:____________</label>
                 <input type="file" id="fileSelector" class="file-selector" directory="" webkitdirectory=""
                     mozdirectory="" />
             </div>
@@ -28,13 +28,23 @@
                 <button id="next10Btn" class="button-small">下10张</button>
             </div>
             <button id="translateBtn" class="button-small">翻译测试</button>
-            <input type="checkbox"  name="enableTranslate" id="enableTranslate" value="true">
-            <label for="enableTranslate" >自动翻译功能</label>
+
+
+
         </div>
         <div class="right">
-            <textarea id="input" rows="10" placeholder="请选择素材文件夹，之后此处会显示与图片相匹配的提示词文本"></textarea>
+            <div class="checkbox-wrapper">
+                <label for="enableTranslate" class="checkbox-label">
+                    <input type="checkbox" name="enableTranslate" id="enableTranslate" value="false" >
+                    分析并翻译</label>
+                <label for="enableRemovalTracker" class="checkbox-label">
+                    <input type="checkbox" name="enableRemovalTracker" id="enableRemovalTracker" value="true" checked>
+                    标记常删词</label>
+            </div>
+
+            <textarea id="input" rows="8" placeholder="请选择素材文件夹，之后此处会显示与图片相匹配的提示词文本"></textarea>
             <button id="analyzeBtn" class="button-large">分析</button>
-            <textarea id="output" rows="10" readonly></textarea>
+            <textarea id="output" rows="8" readonly></textarea>
             <div class="button-wrapper">
                 <button id="copyBtn" class="button-small">复制</button>
                 <button id="ruminateBtn" class="button-small">反刍</button>
@@ -42,6 +52,7 @@
             </div>
 
             <div id="btnGroup"></div>
+            <div id="btnGroup2"></div>
         </div>
     </div>
 

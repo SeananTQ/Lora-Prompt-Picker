@@ -40,7 +40,7 @@ window.onload = function () {
     enableTranslate.addEventListener("click", handleCheckBoxEvent);
 
 
-
+    var removalTrackerDict = {};//统计常删除提示词的词典
 
     function handleCheckBoxEvent() {
         if (enableTranslate.checked) {
@@ -135,7 +135,11 @@ window.onload = function () {
                         button.addEventListener("click", toggleButton);
 
                         // 添加按钮的样式类，这里添加了 "active" 类，可以根据需要修改
-                        button.classList.add("active");
+                        button.classList.add("myactive");
+
+                        if (matchTextButton(button.dataset.text)) {
+                            button.style.borderColor="#FFAA00";
+                        }
 
                         // 将按钮添加到按钮组中
                         btnGroup.appendChild(button);
@@ -147,6 +151,56 @@ window.onload = function () {
                     alert("翻译时出现错误");
                 });
         }
+        else {
+            // 更新右侧文本框高度
+            updateTextareaHeight();
+
+            // 生成与元素数量相同的按钮
+            // 清空按钮组的内容
+            btnGroup.innerHTML = "";
+
+            // 遍历元素数组，为每个元素创建按钮并添加到按钮组
+            for (var i = 0; i < elements.length; i++) {
+                // 获取当前元素
+                var element = elements[i];
+
+                // 创建一个按钮元素
+                var button = document.createElement("button");
+
+                // 设置按钮的显示文本为元素的值
+                button.innerText = element;
+
+                // 设置自定义属性存储元素的文本，方便后续处理
+                button.dataset.text = element;
+
+                // 绑定按钮的点击事件处理函数
+                button.addEventListener("click", toggleButton);
+
+
+                // 添加按钮的样式类，这里添加了 "active" 类，可以根据需要修改
+                button.classList.add("myactive");
+
+                if (matchTextButton(button.dataset.text)) {
+                    button.style.borderColor="#FFAA00";
+                }
+
+                // 将按钮添加到按钮组中
+                btnGroup.appendChild(button);
+            }
+
+            updateOutput();
+        }
+    }
+
+
+    function matchTextButton(text) {
+        var over3 = [];
+        for (let key in removalTrackerDict) {
+          if (removalTrackerDict[key] >= 3) { // 如果计数器的值大于等于3，则添加到over3数组中
+            over3.push(key);
+          }
+        }
+        return over3.includes(text);
     }
 
 
@@ -174,26 +228,37 @@ window.onload = function () {
 
 
     function toggleButton() {
-        this.classList.toggle("active");
+        this.classList.toggle("myactive");
         this.classList.toggle("inactive");
         lastClickedButton = this; // 记录最后点击的按钮
+
+        var buttonText = this.dataset.text;
+        if (this.classList.contains("myactive")) {
+            removalTrackerDict[buttonText] = (removalTrackerDict[buttonText] || 0) - 1;
+        }
+        else if (this.classList.contains("inactive")) {
+            removalTrackerDict[buttonText] = (removalTrackerDict[buttonText] || 0) + 1;
+        }
+        // console.log(buttonText + "  " + removalTrackerDict[buttonText]);
         updateOutput();
     }
 
     function updateOutput() {
-        var activeButtons = document.querySelectorAll(".active");
+        var activeButtons = document.querySelectorAll(".myactive");
         var buttonText = Array.from(activeButtons).map(function (button) {
             return button.dataset.text; // 使用自定义属性获取元素的文本
         }).join(", ");
         output.value = buttonText;
 
         // 检查最后点击的按钮状态
-        if (lastClickedButton && lastClickedButton.classList.contains("active")) {
+        if (lastClickedButton && lastClickedButton.classList.contains("myactive")) {
             var selectedText = lastClickedButton.dataset.text;
-            var startIndex = output.value.indexOf(selectedText);
-            if (startIndex !== -1) {
+            // var regex = new RegExp(`^(\s|,|$).*?${selectedText}.*?(\\s|,|\\.|\\?|$)`, "i");
+            var regex = new RegExp(`(?<![a-zA-Z])\\s${selectedText}(?![a-zA-Z\\s])|(?<![a-zA-Z\\s])${selectedText}(?![a-zA-Z\\s])`, "i");
+            if (regex.test(output.value)) {
                 output.focus(); // 设置输出文本框为焦点
-                output.setSelectionRange(startIndex, startIndex + selectedText.length);
+                var match = output.value.match(regex);
+                output.setSelectionRange(match.index, match.index + match[0].length);
             }
         }
 
@@ -288,10 +353,14 @@ window.onload = function () {
 
     //显示后N张图片,自动处理越界
     function showNextImage(count) {
+
         if (count !== 1 && count !== 10) {
             alert("参数count必须为1或10");
             return;
         }
+        // 清空按钮组的内容
+        btnGroup.innerHTML = "";
+        output.value = "";
 
         if (currentImageFilePathIndex < imageFilePaths.length - 1 && currentTextFilePathIndex < txtFilePaths.length - 1) {
             var go = imageFilePaths.length - 1 - currentImageFilePathIndex;
@@ -311,6 +380,9 @@ window.onload = function () {
             alert("参数count必须为1或10");
             return;
         }
+        // 清空按钮组的内容
+        btnGroup.innerHTML = "";
+        output.value = "";
 
         if (currentImageFilePathIndex > 0 && currentTextFilePathIndex > 0) {
             var go = currentImageFilePathIndex;
@@ -341,6 +413,7 @@ window.onload = function () {
     function ruminateOutput() {
         input.value = output.value;
         //alert("已将输出文本反刍至输入文本框");
+        analyzeText();
     }
 
 
@@ -365,7 +438,4 @@ window.onload = function () {
         document.body.removeChild(a);
         URL.revokeObjectURL(a.href);
     }
-
-
-
 };
